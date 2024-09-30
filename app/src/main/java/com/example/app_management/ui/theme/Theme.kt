@@ -50,7 +50,7 @@ fun AppManagementTheme(
     )
 
     systemUiController.setStatusBarColor(
-        color = DarkGrey40
+        color = Background
     )
 
     val colorScheme = when {

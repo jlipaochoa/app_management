@@ -12,11 +12,13 @@ import androidx.lifecycle.ViewModel
 fun AppBar(
     title: String = "Gestor de Aplicacione Alwa", onSearch: (String) -> Unit = {},
     appBarState: StateWidgetAppBar,
+    query:String,
     onChangeState: (StateWidgetAppBar) -> Unit
 ) {
     when (appBarState) {
         StateWidgetAppBar.SEARCH ->
             SearchAppBar(
+                query = query,
                 changeState = { onChangeState(StateWidgetAppBar.DEFAULT) },
                 search = onSearch
             )

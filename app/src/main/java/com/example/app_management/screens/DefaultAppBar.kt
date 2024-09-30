@@ -3,9 +3,11 @@ package com.example.app_management.screens
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,6 +18,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,7 +34,7 @@ fun DefaultAppBar(
 ) {
     TopAppBar(
         title = {
-            Column (modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center){
+            Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center){
                 Text(
                     "Gestor de Aplicaciones Alwa",
                     color = Color.White,
@@ -40,7 +43,7 @@ fun DefaultAppBar(
                 )
             }
         },
-        modifier = Modifier.height(65.dp),
+        modifier = Modifier.padding(10.dp).height(65.dp).clip(RoundedCornerShape(100.dp)),
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = DarkGrey40),
         actions = {
             IconButton(onClick = { changeState() }, modifier = Modifier.fillMaxHeight()) {

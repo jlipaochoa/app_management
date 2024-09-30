@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -18,10 +17,10 @@ fun MemoryAndStorageInfo(context: Context) {
     val (totalRam, usageRam) = remember { context.getRamData() }
     val (totalInternal, usageInternal) = remember { getInternalStorageData() }
 
-    Column(modifier = Modifier.padding(start = 16.dp)) {
+    Column {
         ProgressBarRangeInfo(
             label = "RAM",
-            icon = R.drawable.ic_ram,
+            icon = R.drawable.ram,
             total = totalRam,
             usage = usageRam,
             suffix = "MB"
@@ -29,7 +28,7 @@ fun MemoryAndStorageInfo(context: Context) {
         Spacer(modifier = Modifier.height(12.dp))
         ProgressBarRangeInfo(
             label = "Memoria",
-            icon = R.drawable.ic_storage,
+            icon = R.drawable.ssd,
             total = totalInternal,
             usage = usageInternal,
             suffix = "MB"

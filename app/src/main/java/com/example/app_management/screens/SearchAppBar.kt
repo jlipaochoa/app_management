@@ -1,9 +1,10 @@
 package com.example.app_management.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
@@ -13,36 +14,35 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.app_management.ui.theme.DarkGrey40
 
 @Composable
-@Preview
-fun SearchAppBar(changeState: () -> Unit = { }, search: (String) -> Unit = {}) {
-    var text by remember { mutableStateOf("") }
+fun SearchAppBar(
+    query: String,
+    changeState: () -> Unit = { },
+    search: (String) -> Unit = {}
+) {
     Surface(
         modifier = Modifier
+            .padding(10.dp)
             .fillMaxWidth()
-            .background(DarkGrey40)
+            .clip(RoundedCornerShape(100.dp))
             .height(65.dp),
         color = DarkGrey40
     ) {
         TextField(
             singleLine = true,
             modifier = Modifier
+                .padding(start = 20.dp)
                 .fillMaxWidth()
                 .fillMaxHeight(),
-            value = text,
+            value = query,
             onValueChange = {
-                text = it
-                search(text)
+                search(it)
             },
             placeholder = {
                 Text(
@@ -53,8 +53,8 @@ fun SearchAppBar(changeState: () -> Unit = { }, search: (String) -> Unit = {}) {
             trailingIcon =
             {
                 IconButton(onClick = {
-                    if (text.isNotEmpty()) {
-                        text = ""
+                    if (query.isNotEmpty()) {
+                        search("")
                         return@IconButton
                     }
                     changeState()
