@@ -2,16 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
-    <queries>
-        <!-- Consulta aplicaciones específicas por su nombre de paquete -->
-        <package android:name="com.example.someapp" />
-
-        <!-- Consulta todas las aplicaciones que pueden manejar un intent -->
-        <intent>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent>
-    </queries>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
     <application
         android:name="AppManagementApplication"
         android:allowBackup="true"

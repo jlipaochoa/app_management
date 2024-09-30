@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.example.app_management.data.AppInfoModel
+import com.example.app_management.data.getColorRisk
+import com.example.app_management.data.labelUsage
 import com.example.app_management.ui.theme.DarkGrey40
 
 @Composable
@@ -66,6 +68,32 @@ fun CardAppItem(
                 style = MaterialTheme.typography.titleSmall,
                 textAlign = TextAlign.Center,
                 color = Color.White
+            )
+            Text(
+                text = "Tamano: ${appInfo.size} MB",
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.Center,
+                color = Color.White
+            )
+            Text(
+                text = "Riesgo: ${appInfo.percentageRisk} %",
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.Center,
+                color = appInfo.getColorRisk()
+            )
+            Text(
+                text = appInfo.labelUsage(),
+                modifier = Modifier.fillMaxWidth(),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.titleSmall,
+                textAlign = TextAlign.Center,
             )
         }
     }
