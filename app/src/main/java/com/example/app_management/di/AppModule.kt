@@ -5,10 +5,14 @@ import androidx.room.Room
 import com.example.app_management.data.AppDataBase
 import com.example.app_management.data.repository.AppRepositoryImpl
 import com.example.app_management.domain.repository.AppRepository
+import com.example.app_management.presentation.apps.CoroutineContextProvider
+import com.example.app_management.presentation.ui.PermissionChecker
+import com.example.app_management.presentation.ui.UsageStatsPermissionChecker
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Singleton
 
 @Module
@@ -30,4 +34,15 @@ object AppModule {
         return AppRepositoryImpl(db.appDao)
     }
 
+    @Provides
+    @Singleton
+    fun providePermissionChecker(): PermissionChecker {
+        return UsageStatsPermissionChecker()
+    }
+
+    @Provides
+    @Singleton
+    fun provideCoroutineContext(): CoroutineContextProvider {
+        return CoroutineContextProvider(Dispatchers.Main, Dispatchers.IO)
+    }
 }

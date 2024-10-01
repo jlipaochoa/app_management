@@ -37,7 +37,7 @@ fun AnalysisSection(
     ) {
         MemoryAndStorageInfo(context = LocalContext.current)
         Spacer(modifier = Modifier.height(10.dp))
-        Text("Analisis Por :", style = MaterialTheme.typography.titleMedium, color = Color.White)
+        Text("Ordenar Por :", style = MaterialTheme.typography.titleMedium, color = Color.White)
         Spacer(modifier = Modifier.height(5.dp))
         Row(
             modifier = Modifier.fillMaxWidth()

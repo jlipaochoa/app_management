@@ -10,21 +10,21 @@ import com.example.app_management.domain.models.AppInfoDetail
 import com.example.app_management.domain.models.toAppInfo
 import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
 import com.example.app_management.domain.useCases.InsertAppInfoUseCase
+import com.example.app_management.presentation.apps.CoroutineContextProvider
 import com.example.app_management.presentation.ui.theme.Green40
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     val getDetailUseCase: GetAppByPackageNameUseCase,
-    val insertAppInfoUseCase: InsertAppInfoUseCase
+    val insertAppInfoUseCase: InsertAppInfoUseCase,
+    private val coroutineContextProvider: CoroutineContextProvider
 ) : ViewModel() {
     private val _appDetail = MutableStateFlow<AppInfoDetail?>(null)
     val appDetail: StateFlow<AppInfoDetail?> = _appDetail.asStateFlow()
@@ -47,9 +47,9 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun getAppByPackageName(packageName: String) {
+    fun getAppByPackageName(packageName: String) {
         if (packageName == "") return
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(coroutineContextProvider.backgroundContext) {
             _appDetail.value = getDetailUseCase(packageName)
             analyseUsage()
             analysePermissions()
@@ -117,10 +117,10 @@ class DetailViewModel @Inject constructor(
 
 
     fun insertAppInfo(appInfo: AppInfo) {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineContextProvider.backgroundContext) {
             try {
                 appInfo.packageName = _appDetail.value?.packageName ?: ""
-                withContext(Dispatchers.IO) { insertAppInfoUseCase(appInfo) }
+                insertAppInfoUseCase(appInfo)
                 _appDetail.emit(
                     _appDetail.value?.copy(
                         description = appInfo.description,
@@ -134,9 +134,8 @@ class DetailViewModel @Inject constructor(
     }
 
     fun updateDescription(appInfo: AppInfo?) {
-        viewModelScope.launch {
+        viewModelScope.launch(coroutineContextProvider.backgroundContext) {
             appInfo?.copy()?.let { _appInfo.emit(it) }
         }
     }
-
 }

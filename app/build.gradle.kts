@@ -57,14 +57,14 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation ("io.coil-kt:coil-compose:2.0.0") // cargar imagenes
-    implementation (libs.accompanist.systemuicontroller) //status
+    implementation("io.coil-kt:coil-compose:2.0.0") // cargar imagenes
+    implementation(libs.accompanist.systemuicontroller) //status
     implementation("androidx.navigation:navigation-compose:2.8.1") //navegacion
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
-    implementation ("androidx.room:room-runtime:2.6.1")
-    kapt ("androidx.room:room-compiler:2.6.1")
-    implementation ("androidx.room:room-ktx:2.6.1")
+    implementation("androidx.room:room-runtime:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
     kapt("com.google.dagger:hilt-android-compiler:2.50")
     implementation("com.google.dagger:hilt-android:2.50")
 
@@ -87,5 +87,10 @@ dependencies {
     testImplementation("org.mockito:mockito-core:4.0.0")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation("org.powermock:powermock-module-junit4:2.0.9")
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+
 }

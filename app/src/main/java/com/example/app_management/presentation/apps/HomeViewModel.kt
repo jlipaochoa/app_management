@@ -4,14 +4,12 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app_management.domain.models.AppInfoAnalysis
-import com.example.app_management.extentions.hasUsageStatsPermission
-import com.example.app_management.extentions.requestUsageStatsPermission
 import com.example.app_management.domain.useCases.AnalysisUseCase
 import com.example.app_management.domain.useCases.GetAppsUseCase
 import com.example.app_management.presentation.apps.components.StateWidgetAppBar
 import com.example.app_management.presentation.apps.components.TypeAnalysis
+import com.example.app_management.presentation.ui.PermissionChecker
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +17,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val getAppsUseCase: GetAppsUseCase,
     val analysisUseCase: AnalysisUseCase,
-    private val application: Application
+    private val application: Application,
+    private val permissionChecker: PermissionChecker,
+    private val coroutineContextProvider: CoroutineContextProvider
 ) : ViewModel() {
 
     private var jobOrderApps: Job? = null
@@ -32,8 +33,6 @@ class HomeViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     private var getAppJobs: Job? = null
-
-    private var analysisJob: Job? = null
 
     private var _items = listOf<AppInfoAnalysis>()
 
@@ -67,7 +66,10 @@ class HomeViewModel @Inject constructor(
         getAppJobs = viewModelScope.launch {
             _filteredItems.value = listOf()
             _loadingEvent.value = true
-            _items = withContext(Dispatchers.IO) { getAppsUseCase(typeAnalysis.value) }
+            val apps = withContext(coroutineContextProvider.backgroundContext) {
+                getAppsUseCase(typeAnalysis.value)
+            }
+            _items = apps
             _loadingEvent.value = false
             onSearchQueryChanged(query.value)
         }
@@ -76,25 +78,25 @@ class HomeViewModel @Inject constructor(
     fun onSearchQueryChanged(query: String) {
         _query.value = query
         searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            _filteredItems.value = withContext(Dispatchers.Default) {
+        searchJob = viewModelScope.launch(coroutineContextProvider.backgroundContext) {
+            _filteredItems.value =
                 if (query.isEmpty()) {
                     _items
                 } else {
                     _items.filter { it.name.contains(query, ignoreCase = true) }
                 }
-            }
         }
+
     }
 
     fun orderByTypeAnalysis(typeAnalysis: TypeAnalysis) {
         if (!hasUsageStatsPermission()) {
-            application.requestUsageStatsPermission()
+            permissionChecker.requestUsageStatsPermission(application)
             return
         }
         _typeAnalysis.value = typeAnalysis
         jobOrderApps?.cancel()
-        jobOrderApps = viewModelScope.launch(Dispatchers.IO) {
+        jobOrderApps = viewModelScope.launch(coroutineContextProvider.backgroundContext) {
             val sortedItems = _items.sortedByDescending {
                 when (typeAnalysis) {
                     TypeAnalysis.Memory -> it.size
@@ -102,9 +104,7 @@ class HomeViewModel @Inject constructor(
                     TypeAnalysis.Usage -> it.percentageUsage
                 }
             }
-            withContext(Dispatchers.Main) {
-                _filteredItems.value = sortedItems
-            }
+            _filteredItems.value = sortedItems
         }
     }
 
@@ -113,20 +113,23 @@ class HomeViewModel @Inject constructor(
     }
 
     fun analysisDescription() {
-        if (!hasUsageStatsPermission()) {
-            application.requestUsageStatsPermission()
-            return
-        }
-        analysisJob?.cancel()
-        analysisJob = viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(coroutineContextProvider.backgroundContext) {
+            if (!hasUsageStatsPermission()) {
+                permissionChecker.requestUsageStatsPermission(application)
+                return@launch
+            }
             _description.value = analysisUseCase(filteredItems.value)
             updateShowDialog()
         }
     }
 
     fun hasUsageStatsPermission(): Boolean {
-        return application.hasUsageStatsPermission()
+        return permissionChecker.hasUsageStatsPermission(application)
     }
-
-
 }
+
+
+data class CoroutineContextProvider(
+    val mainContext: CoroutineContext,
+    val backgroundContext: CoroutineContext
+)
