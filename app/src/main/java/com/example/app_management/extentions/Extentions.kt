@@ -104,10 +104,9 @@ fun List<UsageStats>.getAppUsagePercentages(
     packageName: String,
     totalForegroundTime: Long
 ): Double {
-    val appForegroundTime =
-        this.firstOrNull { it.packageName == packageName }?.totalTimeInForeground ?: 0L
+    val appForegroundTime = this.filter { it.packageName == packageName }.sumOf { it.totalTimeInForeground }
     val percentage = (appForegroundTime.toDouble() / totalForegroundTime.toDouble()) * 100
-    return percentage
+    return percentage.twoDecimals()
 }
 
 fun Context.getSecurityPercentages(packageName: String): Double {

@@ -57,6 +57,10 @@ fun HomeScreen(
 
     val loadingEvent by viewModel.loadingEvent.collectAsState()
 
+    val description by viewModel.description.collectAsState()
+
+    val typeAnalysis by viewModel.typeAnalysis.collectAsState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -74,7 +78,11 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            AnalysisSection { type -> viewModel.analysis(type) }
+            AnalysisSection(
+                analysisDescription = description,
+                analysisCallBack = { type -> viewModel.analysis(type) },
+                typeAnalysisSelected = typeAnalysis
+            )
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
             ) {
@@ -121,9 +129,38 @@ class HomeViewModel @Inject constructor(val application: Application) : ViewMode
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
 
+    private val _description = MutableStateFlow("")
+    val description: StateFlow<String> = _description.asStateFlow()
+
+    private val _typeAnalysis = MutableStateFlow(TypeAnalysis.None)
+    val typeAnalysis: StateFlow<TypeAnalysis> = _typeAnalysis.asStateFlow()
 
     fun setAppBarState(state: StateWidgetAppBar) {
         _appBarState.value = state
+    }
+
+    init {
+        getLaunchApps(application.packageManager)
+    }
+
+    private fun getLaunchApps(packageManager: PackageManager) {
+        val times = application.timesUsageStats()
+
+        viewModelScope.launch {
+            _loadingEvent.value = true
+            _items = withContext(Dispatchers.IO) {
+                packageManager.getLaunchApps()
+                    .map {
+                        it.toAppInfoModel(
+                            packageManager,
+                            application.applicationContext,
+                            times
+                        )
+                    }
+            }
+            _loadingEvent.value = false
+            _filteredItems.value = _items
+        }
     }
 
     fun onSearchQueryChanged(query: String) {
@@ -140,29 +177,12 @@ class HomeViewModel @Inject constructor(val application: Application) : ViewMode
         }
     }
 
-    init {
-        getLaunchApps(application.packageManager)
-    }
-
-    private fun getLaunchApps(packageManager: PackageManager) {
-        val times = application.timesUsageStats()
-
-        viewModelScope.launch {
-            _loadingEvent.value = true
-            _items = withContext(Dispatchers.IO) {
-                packageManager.getLaunchApps()
-                    .map { it.toAppInfoModel(packageManager, application.applicationContext, times) }
-            }
-            _loadingEvent.value = false
-            _filteredItems.value = _items
-        }
-    }
-
     fun analysis(typeAnalysis: TypeAnalysis) {
         if (!_isPermissionStatsEnabled) {
             application.requestUsageStatsPermission()
             return
         }
+        _typeAnalysis.value = typeAnalysis
         jobOrderApps?.cancel()
         jobOrderApps = viewModelScope.launch {
             val sortedItems = _items.sortedByDescending {

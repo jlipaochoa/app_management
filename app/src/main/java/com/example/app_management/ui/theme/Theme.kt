@@ -12,12 +12,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80,
-    background = Background,
-    onPrimary = Color.Red,
-    onBackground = Color.Black,
-    surface = Color.Black,
-    onSurface = Color.White,
-    scrim = Color.White
+    background = Background
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -54,8 +49,8 @@ fun AppManagementTheme(
     )
 
     val colorScheme = when {
-        darkTheme -> LightColorScheme
-        else -> LightColorScheme
+        darkTheme -> DarkColorScheme
+        else -> DarkColorScheme
     }
 
     MaterialTheme(

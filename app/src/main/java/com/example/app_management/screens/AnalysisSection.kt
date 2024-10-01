@@ -24,7 +24,11 @@ import com.example.app_management.ui.theme.PurpleGrey80
 import com.example.app_management.ui.theme.Yellow80
 
 @Composable
-fun AnalysisSection(analysisCallBack: (TypeAnalysis) -> Unit) {
+fun AnalysisSection(
+    analysisCallBack: (TypeAnalysis) -> Unit,
+    analysisDescription: String = "",
+    typeAnalysisSelected: TypeAnalysis
+) {
     Column(
         modifier = Modifier
             .padding(10.dp)
