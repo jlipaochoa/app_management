@@ -3,7 +3,6 @@ package com.example.app_management
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -12,14 +11,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.app_management.screens.DetailAppScreen
-import com.example.app_management.screens.HomeScreen
+import androidx.navigation.navArgument
+import com.example.app_management.presentation.detailApp.DetailAppScreen
+import com.example.app_management.presentation.apps.HomeScreen
 import com.example.app_management.ui.theme.AppManagementTheme
 import com.example.app_management.util.Screen
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,7 +41,17 @@ class MainActivity : ComponentActivity() {
                         composable(route = Screen.HomeScreen.route) {
                             HomeScreen(navController = navController)
                         }
-                        composable(route = Screen.DetailAppScreen.route) {
+                        composable(
+                            route = Screen.DetailAppScreen.route + "?packageName={packageName}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "packageName"
+                                ) {
+                                    type = NavType.StringType
+                                    defaultValue = ""
+                                }
+                            )
+                        ) {
                             DetailAppScreen(navController = navController)
                         }
                     }

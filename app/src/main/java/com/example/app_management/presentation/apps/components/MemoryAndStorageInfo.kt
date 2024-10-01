@@ -1,4 +1,4 @@
-package com.example.app_management.screens
+package com.example.app_management.presentation.apps.components
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column

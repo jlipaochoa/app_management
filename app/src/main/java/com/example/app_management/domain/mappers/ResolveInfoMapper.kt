@@ -1,4 +1,4 @@
-package com.example.app_management.mappers
+package com.example.app_management.domain.mappers
 
 import android.app.usage.StorageStatsManager
 import android.content.Context
@@ -6,7 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.UserHandle
 import android.os.storage.StorageManager
-import com.example.app_management.data.AppInfoModel
+import com.example.app_management.domain.models.AppInfoModel
 import com.example.app_management.extentions.getAppUsagePercentages
 import com.example.app_management.extentions.getSecurityPercentages
 import com.example.app_management.extentions.twoDecimals
@@ -37,10 +37,10 @@ fun ApplicationInfo.toAppInfoModel(
     return AppInfoModel(
         this.loadLabel(packageManager).toString(),
         this.loadIcon(packageManager),
-        context.getAppSize(packageName),
-        context.getSecurityPercentages(packageName),
-        times.second.getAppUsagePercentages(packageName, times.first),
-        (flags and ApplicationInfo.FLAG_SYSTEM) != 0
+        context.getAppSize(this.packageName),
+        context.getSecurityPercentages(this.packageName),
+        times.second.getAppUsagePercentages(this.packageName, times.first),
+        this.packageName
     )
 }
 

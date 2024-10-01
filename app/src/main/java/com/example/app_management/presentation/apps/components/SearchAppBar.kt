@@ -1,4 +1,4 @@
-package com.example.app_management.screens
+package com.example.app_management.presentation.apps.components
 
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth

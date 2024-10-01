@@ -1,6 +1,6 @@
-package com.example.app_management.screens
+package com.example.app_management.presentation.detailApp
 
-import android.widget.Space
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -39,12 +37,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.app_management.R
 import com.example.app_management.ui.theme.Green40
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @Composable
@@ -238,7 +239,18 @@ fun DetailAppScreen(
 }
 
 @HiltViewModel
-class DetailViewModel @Inject constructor() : ViewModel() {
+class DetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+    init {
+        savedStateHandle.get<String>("packageName")?.let { noteId ->
+            if(noteId != "") {
+                viewModelScope.launch {
+                    Log.e("quack 123", noteId)
+                }
+            }
+        }
+    }
     val listPermission = listOf(
         Pair("Camara", true),
         Pair("Camara", false),

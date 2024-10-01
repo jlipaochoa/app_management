@@ -1,4 +1,4 @@
-package com.example.app_management.screens
+package com.example.app_management.presentation.apps.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -76,6 +76,9 @@ fun AnalysisSection(
             ) {
                 Text("Memoria", style = MaterialTheme.typography.titleSmall)
             }
+            if (analysisDescription.isNotEmpty()) {
+                Text("asdfasdf")
+            }
         }
     }
 }
@@ -83,6 +86,5 @@ fun AnalysisSection(
 enum class TypeAnalysis {
     Usage,
     Memory,
-    Security,
-    None
+    Security
 }

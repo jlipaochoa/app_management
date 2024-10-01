@@ -1,4 +1,4 @@
-package com.example.app_management.data
+package com.example.app_management.domain.models
 
 import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.Color
@@ -10,7 +10,7 @@ class AppInfoModel(
     val size: Double = 0.0,
     val percentageRisk: Double = 0.0,
     var percentageUsage: Double = 0.0,
-    val isSystemApp: Boolean = false
+    val packageName: String = ""
 )
 
 fun AppInfoModel.getColorRisk(): Color {

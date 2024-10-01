@@ -14,7 +14,7 @@ import android.os.Process.myUid
 import android.os.StatFs
 import android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS
 import android.widget.Toast
-import com.example.app_management.mappers.FORMAT_DOUBLE
+import com.example.app_management.domain.mappers.FORMAT_DOUBLE
 import java.util.Calendar
 
 fun PackageManager.getLaunchApps(): List<ApplicationInfo> {
