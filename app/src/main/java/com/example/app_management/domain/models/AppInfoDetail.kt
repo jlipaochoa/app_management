@@ -3,7 +3,7 @@ package com.example.app_management.domain.models
 import android.graphics.drawable.Drawable
 import java.util.Date
 
-class AppInfoDetail(
+data class AppInfoDetail(
     val name: String,
     val packageName: String,
     var description: String = "",
@@ -18,8 +18,6 @@ class AppInfoDetail(
     val sizeApp: Double,
     var securityPercentages: Double = 0.0,
     var percentageUsage: Double = 0.0,
-    var analysisPermission: String = "",
-    var analysisUsage: String = ""
 )
 
 fun AppInfoDetail.toAppInfo(): AppInfo {

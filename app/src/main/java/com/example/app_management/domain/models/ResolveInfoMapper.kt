@@ -9,11 +9,14 @@ import android.os.UserHandle
 import android.os.storage.StorageManager
 import com.example.app_management.extentions.getAppUsagePercentages
 import com.example.app_management.extentions.getSecurityPercentages
+import com.example.app_management.extentions.hasUsageStatsPermission
 import com.example.app_management.extentions.toDate
 import com.example.app_management.extentions.twoDecimals
 import com.example.app_management.util.sensitivePermissions
 
 fun Context.getAppSize(packageName: String): Double {
+    if(!this.hasUsageStatsPermission()) return 0.0
+
     val storageStatsManager =
         this.getSystemService(Context.STORAGE_STATS_SERVICE) as StorageStatsManager
     val userHandle = UserHandle.getUserHandleForUid(android.os.Process.myUid())
@@ -40,7 +43,7 @@ fun ApplicationInfo.toAppInfoModel(
         this.loadIcon(packageManager),
         context.getAppSize(this.packageName),
         context.getSecurityPercentages(this.packageName),
-        times.second.getAppUsagePercentages(this.packageName, times.first),
+        times.second.getAppUsagePercentages(this.packageName, times.first, context),
         this.packageName
     )
 }
@@ -65,6 +68,6 @@ fun ApplicationInfo.toAppInfoDetail(
         isSystemApp = (this.flags and ApplicationInfo.FLAG_SYSTEM) != 0,
         sizeApp = context.getAppSize(this.packageName),
         securityPercentages = context.getSecurityPercentages(this.packageName),
-        percentageUsage = times.second.getAppUsagePercentages(this.packageName, times.first),
+        percentageUsage = times.second.getAppUsagePercentages(this.packageName, times.first, context),
     )
 }

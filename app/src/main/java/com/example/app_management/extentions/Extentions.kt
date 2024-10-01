@@ -14,6 +14,7 @@ import android.os.Process.myUid
 import android.os.StatFs
 import android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS
 import android.widget.Toast
+import com.example.app_management.domain.models.getAppSize
 import com.example.app_management.util.sensitivePermissions
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -107,8 +108,10 @@ fun Context.timesUsageStats(): Pair<Long, List<UsageStats>> {
 
 fun List<UsageStats>.getAppUsagePercentages(
     packageName: String,
-    totalForegroundTime: Long
+    totalForegroundTime: Long,
+    context: Context
 ): Double {
+    if (!context.hasUsageStatsPermission()) return 0.0
     val appForegroundTime =
         this.filter { it.packageName == packageName }.sumOf { it.totalTimeInForeground }
     val percentage = (appForegroundTime.toDouble() / totalForegroundTime.toDouble()) * 100
@@ -116,6 +119,7 @@ fun List<UsageStats>.getAppUsagePercentages(
 }
 
 fun Context.getSecurityPercentages(packageName: String): Double {
+    if (!this.hasUsageStatsPermission()) return 0.0
     val packageManager = this.packageManager
     val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
     val requestedPermissions = packageInfo.requestedPermissions ?: return 0.0

@@ -1,6 +1,5 @@
 package com.example.app_management.presentation.detailApp
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -18,14 +17,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,25 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.example.app_management.domain.models.AppInfoDetail
-import com.example.app_management.domain.models.toAppInfo
-import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
-import com.example.app_management.domain.useCases.InsertAppInfoUseCase
 import com.example.app_management.presentation.detailApp.components.PermissionCheck
 import com.example.app_management.presentation.detailApp.components.SectionDetail
 import com.example.app_management.presentation.ui.theme.Green40
-import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @Composable
 fun DetailAppScreen(
@@ -66,6 +51,18 @@ fun DetailAppScreen(
     val analysisUsage by detailViewModel.analysisUsage.collectAsState()
 
     val analysisPermissions by detailViewModel.analysisPermissions.collectAsState()
+
+    val showDialog by detailViewModel.showDialog.collectAsState()
+
+    val appInfo by detailViewModel.appInfo.collectAsState()
+
+    DialogAddAppInfo(
+        showDialog,
+        appInfo,
+        { detailViewModel.updateDescription(it) },
+        { detailViewModel.updateShowDialog() },
+        { detailViewModel.insertAppInfo(it) }
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -117,7 +114,7 @@ fun DetailAppScreen(
                             )
                         }
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = { detailViewModel.updateShowDialog() }) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
                             contentDescription = "Search",
@@ -161,7 +158,7 @@ fun DetailAppScreen(
                             .align(Alignment.CenterVertically)
                     )
                     Spacer(modifier = Modifier.weight(0.1f))
-                    Divider(
+                    VerticalDivider(
                         color = Color.Gray,
                         modifier = Modifier
                             .fillMaxHeight()
@@ -176,7 +173,7 @@ fun DetailAppScreen(
                             .align(Alignment.CenterVertically)
                     )
                     Spacer(modifier = Modifier.weight(0.1f))
-                    Divider(
+                    VerticalDivider(
                         color = Color.Gray,
                         modifier = Modifier
                             .fillMaxHeight()
@@ -191,7 +188,7 @@ fun DetailAppScreen(
                             .align(Alignment.CenterVertically)
                     )
                 }
-                Divider(
+                HorizontalDivider(
                     color = Color.Gray,
                     thickness = 1.dp,
                     modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)
@@ -210,7 +207,7 @@ fun DetailAppScreen(
                             .align(Alignment.CenterVertically)
                     )
                     Spacer(modifier = Modifier.weight(0.1f))
-                    Divider(
+                    VerticalDivider(
                         color = Color.Gray,
                         modifier = Modifier
                             .fillMaxHeight()
@@ -269,90 +266,5 @@ fun DetailAppScreen(
             }
         }
     }
-}
-
-@HiltViewModel
-class DetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
-    getDetailUseCase: GetAppByPackageNameUseCase,
-    val insertAppInfoUseCase: InsertAppInfoUseCase
-) : ViewModel() {
-    private val _appDetail = MutableStateFlow<AppInfoDetail?>(null)
-    val appDetail: StateFlow<AppInfoDetail?> = _appDetail.asStateFlow()
-
-    private val _analysisPermissions = MutableStateFlow(Pair("", Green40))
-    val analysisPermissions: StateFlow<Pair<String, Color>> = _analysisPermissions.asStateFlow()
-
-    private val _analysisUsage = MutableStateFlow(Pair("", Green40))
-    val analysisUsage: StateFlow<Pair<String, Color>> = _analysisUsage.asStateFlow()
-
-    init {
-        savedStateHandle.get<String>("packageName")?.let { packageName ->
-            if (packageName != "") {
-                viewModelScope.launch(Dispatchers.IO) {
-                    _appDetail.value = getDetailUseCase(packageName)
-                    _analysisUsage.value = when {
-                        _appDetail.value?.isSystemApp == true ->
-                            Pair(
-                                "Esta aplicacion es del propio sistema operativo, por lo que es necesario para el buen funcionamiento del equipo.",
-                                Green40
-                            )
-
-                        _appDetail.value?.isSystemApp == false && (appDetail.value?.percentageUsage
-                            ?: 0.0) == 0.0 ->
-                            Pair(
-                                "Te sugerimos que lo borres, no lo usas.",
-                                Color.Red
-                            )
-
-                        _appDetail.value?.isSystemApp == false && (appDetail.value?.percentageUsage
-                            ?: 0.0) < 11 ->
-                            Pair(
-                                "Te sugerimos que lo borres, ya que su porcentaje de uso es bajo.",
-                                Color.Red
-                            )
-
-                        else -> Pair("", Green40)
-                    }
-                    _analysisPermissions.value = when {
-                        _appDetail.value?.isSystemApp == false && _appDetail.value?.securityPercentages ?: 0.0 > 50 -> Pair(
-                            "Te sugerimos que verifiques los permisos que le has otorgado a la app, ya que contiene permisos sensibles.",
-                            Color.Red
-                        )
-
-                        _appDetail.value?.isSystemApp == false && _appDetail.value?.securityPercentages ?: 0.0 > 25 -> Pair(
-                            "Tiene pocos permisos sensibles, aun asi te recomendamos verificar si es necesario",
-                            Color.Yellow
-                        )
-
-                        _appDetail.value?.isSystemApp == false && _appDetail.value?.securityPercentages == 0.0 -> Pair(
-                            "No contiene permisos sensibles",
-                            Color.Green
-                        )
-
-                        _appDetail.value?.isSystemApp == true -> Pair(
-                            "Esta aplicacion es del mismo sistema android, por lo que es necesario los permisos para que funcione de forma correcta",
-                            Green40
-                        )
-
-                        else -> Pair("", Green40)
-                    }
-                }
-            }
-        }
-    }
-
-    fun insertAppInfo(appInfoDetail: AppInfoDetail) {
-        viewModelScope.launch {
-            try {
-                insertAppInfoUseCase(appInfoDetail.toAppInfo())
-                _appDetail.value = appInfoDetail
-            } catch (e: Throwable) {
-                Log.e("app", e.localizedMessage ?: "")
-            }
-        }
-    }
-
-
 }
 
