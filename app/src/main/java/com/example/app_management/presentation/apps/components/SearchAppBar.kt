@@ -14,8 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.app_management.presentation.ui.theme.DarkGrey40
@@ -26,6 +30,11 @@ fun SearchAppBar(
     changeState: () -> Unit = { },
     search: (String) -> Unit = {}
 ) {
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
     Surface(
         modifier = Modifier
             .padding(10.dp)
@@ -39,7 +48,8 @@ fun SearchAppBar(
             modifier = Modifier
                 .padding(start = 20.dp)
                 .fillMaxWidth()
-                .fillMaxHeight(),
+                .fillMaxHeight()
+                .focusRequester(focusRequester),
             value = query,
             onValueChange = {
                 search(it)
