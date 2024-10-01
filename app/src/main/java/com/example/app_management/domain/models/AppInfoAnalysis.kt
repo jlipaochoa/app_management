@@ -2,9 +2,9 @@ package com.example.app_management.domain.models
 
 import android.graphics.drawable.Drawable
 import androidx.compose.ui.graphics.Color
-import com.example.app_management.ui.theme.Orange
+import com.example.app_management.presentation.ui.theme.Orange
 
-class AppInfoModel(
+class AppInfoAnalysis(
     val name: String,
     val image: Drawable,
     val size: Double = 0.0,
@@ -13,7 +13,7 @@ class AppInfoModel(
     val packageName: String = ""
 )
 
-fun AppInfoModel.getColorRisk(): Color {
+fun AppInfoAnalysis.getColorRisk(): Color {
     return when {
         percentageRisk > 50 -> Color.Red
         percentageRisk > 25 -> Color.Yellow
@@ -21,7 +21,7 @@ fun AppInfoModel.getColorRisk(): Color {
     }
 }
 
-fun AppInfoModel.labelUsage(): String {
+fun AppInfoAnalysis.labelUsage(): String {
     return when {
         percentageUsage > 50 -> "Frecuente"
         percentageUsage > 11 -> "Regular"
@@ -30,7 +30,7 @@ fun AppInfoModel.labelUsage(): String {
     }
 }
 
-fun AppInfoModel.colorUsage(): Color {
+fun AppInfoAnalysis.colorUsage(): Color {
     return when {
         percentageUsage > 50 -> Color.Green
         percentageUsage > 11 -> Orange

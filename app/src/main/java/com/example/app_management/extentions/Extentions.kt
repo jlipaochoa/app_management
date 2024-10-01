@@ -14,8 +14,13 @@ import android.os.Process.myUid
 import android.os.StatFs
 import android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS
 import android.widget.Toast
-import com.example.app_management.domain.mappers.FORMAT_DOUBLE
+import com.example.app_management.util.sensitivePermissions
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
+const val FORMAT_DOUBLE = "%.2f"
 
 fun PackageManager.getLaunchApps(): List<ApplicationInfo> {
     val intent = Intent(Intent.ACTION_MAIN, null)
@@ -65,7 +70,7 @@ fun Context.hasUsageStatsPermission(): Boolean {
 fun Context.requestUsageStatsPermission() {
     try {
         val intent = Intent(ACTION_USAGE_ACCESS_SETTINGS)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // Agregar la flag
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         this.startActivity(intent)
         Toast.makeText(
             this,
@@ -104,37 +109,27 @@ fun List<UsageStats>.getAppUsagePercentages(
     packageName: String,
     totalForegroundTime: Long
 ): Double {
-    val appForegroundTime = this.filter { it.packageName == packageName }.sumOf { it.totalTimeInForeground }
+    val appForegroundTime =
+        this.filter { it.packageName == packageName }.sumOf { it.totalTimeInForeground }
     val percentage = (appForegroundTime.toDouble() / totalForegroundTime.toDouble()) * 100
     return percentage.twoDecimals()
 }
 
 fun Context.getSecurityPercentages(packageName: String): Double {
     val packageManager = this.packageManager
-    val sensitivePermissions = listOf(
-        "android.permission.ACCESS_FINE_LOCATION",
-        "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO",
-        "android.permission.READ_EXTERNAL_STORAGE",
-        "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.READ_CONTACTS",
-        "android.permission.WRITE_CONTACTS",
-        "android.permission.GET_ACCOUNTS",
-        "android.permission.READ_PHONE_STATE",
-        "android.permission.CALL_PHONE",
-        "android.permission.READ_CALL_LOG",
-        "android.permission.WRITE_CALL_LOG",
-        "android.permission.SEND_SMS",
-        "android.permission.RECEIVE_SMS",
-        "android.permission.READ_SMS",
-        "android.permission.RECEIVE_MMS",
-        "android.permission.BODY_SENSORS",
-        "android.permission.ACCESS_BACKGROUND_LOCATION",
-        "android.permission.POST_NOTIFICATIONS"
-    )
     val packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
     val requestedPermissions = packageInfo.requestedPermissions ?: return 0.0
     val sensitivePermissionInApp = requestedPermissions.filter { it in sensitivePermissions }
     return ((sensitivePermissionInApp.size.toDouble() / sensitivePermissions.size.toDouble()) * 100).twoDecimals()
+}
+
+fun Long.toDate(): String {
+    try {
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val date = Date(this)
+        return dateFormat.format(date)
+    } catch (e: Throwable) {
+        e.printStackTrace()
+    }
+    return "Fecha no disponible"
 }

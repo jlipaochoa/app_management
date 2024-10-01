@@ -25,15 +25,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
-import com.example.app_management.domain.models.AppInfoModel
+import com.example.app_management.domain.models.AppInfoAnalysis
 import com.example.app_management.domain.models.colorUsage
 import com.example.app_management.domain.models.getColorRisk
 import com.example.app_management.domain.models.labelUsage
-import com.example.app_management.ui.theme.DarkGrey40
+import com.example.app_management.presentation.ui.theme.DarkGrey40
 
 @Composable
 fun CardAppItem(
-    appInfo: AppInfoModel,
+    appInfo: AppInfoAnalysis,
     onClick: () -> Unit
 ) {
     Card(

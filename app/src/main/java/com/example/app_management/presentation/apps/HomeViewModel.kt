@@ -3,7 +3,7 @@ package com.example.app_management.presentation.apps
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app_management.domain.models.AppInfoModel
+import com.example.app_management.domain.models.AppInfoAnalysis
 import com.example.app_management.extentions.hasUsageStatsPermission
 import com.example.app_management.extentions.requestUsageStatsPermission
 import com.example.app_management.domain.useCases.AnalysisUseCase
@@ -33,13 +33,13 @@ class HomeViewModel @Inject constructor(
 
     private var searchJob: Job? = null
 
-    private var _items = listOf<AppInfoModel>()
+    private var _items = listOf<AppInfoAnalysis>()
 
     private val _loadingEvent = MutableStateFlow(false)
     val loadingEvent: StateFlow<Boolean> = _loadingEvent.asStateFlow()
 
     private val _filteredItems = MutableStateFlow(_items)
-    val filteredItems: StateFlow<List<AppInfoModel>> = _filteredItems.asStateFlow()
+    val filteredItems: StateFlow<List<AppInfoAnalysis>> = _filteredItems.asStateFlow()
 
     private val _appBarState = MutableStateFlow(StateWidgetAppBar.DEFAULT)
     val appBarState: StateFlow<StateWidgetAppBar> = _appBarState

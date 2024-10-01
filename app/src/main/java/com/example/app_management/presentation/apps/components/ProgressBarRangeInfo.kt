@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.app_management.ui.theme.DarkGrey30
-import com.example.app_management.ui.theme.Green40
+import com.example.app_management.presentation.ui.theme.DarkGrey30
+import com.example.app_management.presentation.ui.theme.Green40
 
 @Composable
 fun ProgressBarRangeInfo(

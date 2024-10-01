@@ -23,7 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.app_management.presentation.apps.components.AnalysisSection
 import com.example.app_management.presentation.apps.components.AppBar
 import com.example.app_management.presentation.apps.components.CardAppItem
-import com.example.app_management.ui.theme.Green40
+import com.example.app_management.presentation.ui.theme.Green40
 import com.example.app_management.util.Screen
 
 @Composable

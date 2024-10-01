@@ -18,7 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.app_management.presentation.detailApp.DetailAppScreen
 import com.example.app_management.presentation.apps.HomeScreen
-import com.example.app_management.ui.theme.AppManagementTheme
+import com.example.app_management.presentation.ui.theme.AppManagementTheme
 import com.example.app_management.util.Screen
 import dagger.hilt.android.AndroidEntryPoint
 

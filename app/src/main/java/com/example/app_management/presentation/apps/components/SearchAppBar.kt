@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.app_management.ui.theme.DarkGrey40
+import com.example.app_management.presentation.ui.theme.DarkGrey40
 
 @Composable
 fun SearchAppBar(

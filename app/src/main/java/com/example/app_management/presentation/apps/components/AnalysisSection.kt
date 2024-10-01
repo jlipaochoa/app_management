@@ -18,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.app_management.ui.theme.DarkGrey40
-import com.example.app_management.ui.theme.Green40
-import com.example.app_management.ui.theme.PurpleGrey80
-import com.example.app_management.ui.theme.Yellow80
+import com.example.app_management.presentation.ui.theme.DarkGrey40
+import com.example.app_management.presentation.ui.theme.Green40
+import com.example.app_management.presentation.ui.theme.PurpleGrey80
+import com.example.app_management.presentation.ui.theme.Yellow80
 
 @Composable
 fun AnalysisSection(

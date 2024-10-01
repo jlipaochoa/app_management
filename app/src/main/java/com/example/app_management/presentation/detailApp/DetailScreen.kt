@@ -19,8 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
@@ -29,12 +27,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -42,9 +41,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.example.app_management.R
-import com.example.app_management.ui.theme.Green40
+import com.example.app_management.domain.models.AppInfoDetail
+import com.example.app_management.domain.models.toAppInfo
+import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
+import com.example.app_management.domain.useCases.InsertAppInfoUseCase
+import com.example.app_management.presentation.detailApp.components.PermissionCheck
+import com.example.app_management.presentation.detailApp.components.SectionDetail
+import com.example.app_management.presentation.ui.theme.Green40
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -53,6 +61,12 @@ fun DetailAppScreen(
     navController: NavController,
     detailViewModel: DetailViewModel = hiltViewModel()
 ) {
+    val appDetail by detailViewModel.appDetail.collectAsState()
+
+    val analysisUsage by detailViewModel.analysisUsage.collectAsState()
+
+    val analysisPermissions by detailViewModel.analysisPermissions.collectAsState()
+
     Scaffold(
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -68,7 +82,7 @@ fun DetailAppScreen(
                 ) {
                     Image(
                         painter = rememberImagePainter(
-                            data = R.drawable.profiler
+                            data = appDetail?.image,
                         ),
                         contentDescription = "App Icon",
                         modifier = Modifier
@@ -89,29 +103,23 @@ fun DetailAppScreen(
                         ) {
                             Text(
                                 style = MaterialTheme.typography.titleLarge,
-                                text = "App de aqui",
+                                text = appDetail?.name ?: "Cargando ...",
                                 color = Color.White
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
                                 style = MaterialTheme.typography.titleSmall,
-                                text = "Game",
+                                text = appDetail?.category ?: "Cargando ...",
                                 modifier = Modifier
                                     .background(color = Green40, shape = RoundedCornerShape(10.dp))
-                                    .padding(5.dp)
+                                    .padding(5.dp),
+                                color = Color.Black
                             )
                         }
                     }
                     IconButton(onClick = {}) {
                         Icon(
                             imageVector = Icons.Filled.Edit,
-                            contentDescription = "Search",
-                            tint = Color.White
-                        )
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowForward,
                             contentDescription = "Search",
                             tint = Color.White
                         )
@@ -132,7 +140,7 @@ fun DetailAppScreen(
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
-                        "Esta es una aplicacion para alsdfasdfl lkasdjf aldkjfa asdlfkj",
+                        appDetail?.description ?: "Aun no cuenta con una descripcion",
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
                     )
@@ -147,7 +155,7 @@ fun DetailAppScreen(
                 ) {
                     SectionDetail(
                         title = "Version App",
-                        data = "2.4.6v",
+                        data = appDetail?.version ?: "Cargando ...",
                         modifier = Modifier
                             .weight(0.3f)
                             .align(Alignment.CenterVertically)
@@ -162,7 +170,7 @@ fun DetailAppScreen(
                     Spacer(modifier = Modifier.weight(0.1f))
                     SectionDetail(
                         title = "Nº de app",
-                        data = "128",
+                        data = appDetail?.versionCode?.toString() ?: "Cargando ...",
                         modifier = Modifier
                             .weight(0.3f)
                             .align(Alignment.CenterVertically)
@@ -177,7 +185,7 @@ fun DetailAppScreen(
                     Spacer(modifier = Modifier.weight(0.1f))
                     SectionDetail(
                         title = "Del Sistema",
-                        data = "Si",
+                        data = appDetail?.isSystemApp?.toString() ?: "Cargando ...",
                         modifier = Modifier
                             .weight(0.3f)
                             .align(Alignment.CenterVertically)
@@ -196,7 +204,7 @@ fun DetailAppScreen(
                 ) {
                     SectionDetail(
                         title = "Fecha de Instalacion",
-                        data = "12/12/2024",
+                        data = appDetail?.firstInstallTime ?: "Cargando ...",
                         modifier = Modifier
                             .weight(0.5f)
                             .align(Alignment.CenterVertically)
@@ -211,7 +219,7 @@ fun DetailAppScreen(
                     Spacer(modifier = Modifier.weight(0.1f))
                     SectionDetail(
                         title = "Fecha de Actualizacion",
-                        data = "12/12/2024",
+                        data = appDetail?.lastUpdateTime ?: "Cargando ...",
                         modifier = Modifier
                             .weight(0.5f)
                             .align(Alignment.CenterVertically)
@@ -220,18 +228,43 @@ fun DetailAppScreen(
             }
 
             item {
-                Text(
-                    "Permisos de la App",
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(start = 20.dp, top = 15.dp, bottom = 15.dp).fillMaxWidth()
-                )
+                Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+                    Text(
+                        "Esta aplicacion pesa: ${appDetail?.sizeApp} MB",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        "Porcentaje de uso en los ultimos 7 dias: ${appDetail?.percentageUsage} %",
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        analysisUsage.first,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = analysisUsage.second
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        "Permisos de la App",
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Spacer(modifier = Modifier.height(5.dp))
+                    Text(
+                        analysisPermissions.first,
+                        color = analysisPermissions.second,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
             }
-            items(detailViewModel.listPermission) {
+            items(appDetail?.permissions ?: listOf()) {
                 PermissionCheck(
                     it.first,
                     it.second,
-                    modifier = Modifier.padding(start = 30.dp, top = 5.dp).fillMaxWidth()
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 5.dp)
+                        .fillMaxWidth()
                 )
             }
         }
@@ -240,68 +273,86 @@ fun DetailAppScreen(
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    getDetailUseCase: GetAppByPackageNameUseCase,
+    val insertAppInfoUseCase: InsertAppInfoUseCase
 ) : ViewModel() {
+    private val _appDetail = MutableStateFlow<AppInfoDetail?>(null)
+    val appDetail: StateFlow<AppInfoDetail?> = _appDetail.asStateFlow()
+
+    private val _analysisPermissions = MutableStateFlow(Pair("", Green40))
+    val analysisPermissions: StateFlow<Pair<String, Color>> = _analysisPermissions.asStateFlow()
+
+    private val _analysisUsage = MutableStateFlow(Pair("", Green40))
+    val analysisUsage: StateFlow<Pair<String, Color>> = _analysisUsage.asStateFlow()
+
     init {
-        savedStateHandle.get<String>("packageName")?.let { noteId ->
-            if(noteId != "") {
-                viewModelScope.launch {
-                    Log.e("quack 123", noteId)
+        savedStateHandle.get<String>("packageName")?.let { packageName ->
+            if (packageName != "") {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _appDetail.value = getDetailUseCase(packageName)
+                    _analysisUsage.value = when {
+                        _appDetail.value?.isSystemApp == true ->
+                            Pair(
+                                "Esta aplicacion es del propio sistema operativo, por lo que es necesario para el buen funcionamiento del equipo.",
+                                Green40
+                            )
+
+                        _appDetail.value?.isSystemApp == false && (appDetail.value?.percentageUsage
+                            ?: 0.0) == 0.0 ->
+                            Pair(
+                                "Te sugerimos que lo borres, no lo usas.",
+                                Color.Red
+                            )
+
+                        _appDetail.value?.isSystemApp == false && (appDetail.value?.percentageUsage
+                            ?: 0.0) < 11 ->
+                            Pair(
+                                "Te sugerimos que lo borres, ya que su porcentaje de uso es bajo.",
+                                Color.Red
+                            )
+
+                        else -> Pair("", Green40)
+                    }
+                    _analysisPermissions.value = when {
+                        _appDetail.value?.isSystemApp == false && _appDetail.value?.securityPercentages ?: 0.0 > 50 -> Pair(
+                            "Te sugerimos que verifiques los permisos que le has otorgado a la app, ya que contiene permisos sensibles.",
+                            Color.Red
+                        )
+
+                        _appDetail.value?.isSystemApp == false && _appDetail.value?.securityPercentages ?: 0.0 > 25 -> Pair(
+                            "Tiene pocos permisos sensibles, aun asi te recomendamos verificar si es necesario",
+                            Color.Yellow
+                        )
+
+                        _appDetail.value?.isSystemApp == false && _appDetail.value?.securityPercentages == 0.0 -> Pair(
+                            "No contiene permisos sensibles",
+                            Color.Green
+                        )
+
+                        _appDetail.value?.isSystemApp == true -> Pair(
+                            "Esta aplicacion es del mismo sistema android, por lo que es necesario los permisos para que funcione de forma correcta",
+                            Green40
+                        )
+
+                        else -> Pair("", Green40)
+                    }
                 }
             }
         }
     }
-    val listPermission = listOf(
-        Pair("Camara", true),
-        Pair("Camara", false),
-        Pair("Camara", true),
-        Pair("Camara", true)
-    )
-}
 
-@Composable
-fun PermissionCheck(label: String, isChecked: Boolean, modifier: Modifier) {
-    val icon = if (isChecked) Icons.Filled.CheckCircle else Icons.Filled.Clear
-    Row(modifier) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            tint = Color.White
-        )
-        Spacer(Modifier.width(10.dp))
-        Text(
-            label,
-            color = Color.White,
-        )
-    }
-}
-
-@Composable
-fun SectionDetail(modifier: Modifier, title: String, data: String) {
-    Row(
-        modifier = modifier
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.CenterVertically)
-        ) {
-            Text(
-                title,
-                color = Color.White,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                data,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium
-            )
+    fun insertAppInfo(appInfoDetail: AppInfoDetail) {
+        viewModelScope.launch {
+            try {
+                insertAppInfoUseCase(appInfoDetail.toAppInfo())
+                _appDetail.value = appInfoDetail
+            } catch (e: Throwable) {
+                Log.e("app", e.localizedMessage ?: "")
+            }
         }
     }
+
+
 }
 
