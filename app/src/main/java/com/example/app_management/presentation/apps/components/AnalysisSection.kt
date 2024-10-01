@@ -18,10 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.app_management.presentation.ui.theme.Background
 import com.example.app_management.presentation.ui.theme.DarkGrey40
-import com.example.app_management.presentation.ui.theme.Green40
-import com.example.app_management.presentation.ui.theme.PurpleGrey80
-import com.example.app_management.presentation.ui.theme.Yellow80
 
 @Composable
 fun AnalysisSection(
@@ -48,19 +46,19 @@ fun AnalysisSection(
                 onClick = { analysisCallBack(TypeAnalysis.Usage) },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = PurpleGrey80,
-                    contentColor = Color.Black
+                    containerColor = if (typeAnalysisSelected == TypeAnalysis.Usage) Background else Color.DarkGray,
+                    contentColor = Color.White
                 )
             ) {
-                Text("Uso", style = MaterialTheme.typography.titleSmall)
+                Text("Uso", style = MaterialTheme.typography.titleSmall, maxLines = 1)
             }
             Spacer(modifier = Modifier.weight(0.1f))
             Button(
                 onClick = { analysisCallBack(TypeAnalysis.Security) },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Yellow80,
-                    contentColor = Color.Black
+                    containerColor = if (typeAnalysisSelected == TypeAnalysis.Security) Background else Color.DarkGray,
+                    contentColor = Color.White
                 )
             ) {
                 Text("Riesgo", style = MaterialTheme.typography.titleSmall, maxLines = 1)
@@ -70,14 +68,14 @@ fun AnalysisSection(
                 onClick = { analysisCallBack(TypeAnalysis.Memory) },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Green40,
-                    contentColor = Color.Black
+                    containerColor = if (typeAnalysisSelected == TypeAnalysis.Memory) Background else Color.DarkGray,
+                    contentColor = Color.White
                 )
             ) {
                 Text("Memoria", style = MaterialTheme.typography.titleSmall)
             }
             if (analysisDescription.isNotEmpty()) {
-                Text("asdfasdf")
+                Text(analysisDescription)
             }
         }
     }

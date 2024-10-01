@@ -27,11 +27,13 @@ class HomeViewModel @Inject constructor(
     private val application: Application
 ) : ViewModel() {
 
-    private val _isPermissionStatsEnabled get() = application.hasUsageStatsPermission()
-
     private var jobOrderApps: Job? = null
 
     private var searchJob: Job? = null
+
+    private var getAppJobs: Job? = null
+
+    private var analysisJob: Job? = null
 
     private var _items = listOf<AppInfoAnalysis>()
 
@@ -50,6 +52,9 @@ class HomeViewModel @Inject constructor(
     private val _description = MutableStateFlow("")
     val description: StateFlow<String> = _description.asStateFlow()
 
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
+
     private val _typeAnalysis = MutableStateFlow(TypeAnalysis.Memory)
     val typeAnalysis: StateFlow<TypeAnalysis> = _typeAnalysis.asStateFlow()
 
@@ -57,16 +62,14 @@ class HomeViewModel @Inject constructor(
         _appBarState.value = state
     }
 
-    init {
-        getLaunchApps()
-    }
-
-    private fun getLaunchApps() {
-        viewModelScope.launch {
+    fun getLaunchApps() {
+        getAppJobs?.cancel()
+        getAppJobs = viewModelScope.launch {
+            _filteredItems.value = listOf()
             _loadingEvent.value = true
             _items = withContext(Dispatchers.IO) { getAppsUseCase(typeAnalysis.value) }
             _loadingEvent.value = false
-            _filteredItems.value = _items
+            onSearchQueryChanged(query.value)
         }
     }
 
@@ -84,20 +87,19 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun analysis(typeAnalysis: TypeAnalysis) {
-        if (!_isPermissionStatsEnabled) {
+    fun orderByTypeAnalysis(typeAnalysis: TypeAnalysis) {
+        if (!hasUsageStatsPermission()) {
             application.requestUsageStatsPermission()
             return
         }
         _typeAnalysis.value = typeAnalysis
         jobOrderApps?.cancel()
-        jobOrderApps = viewModelScope.launch {
+        jobOrderApps = viewModelScope.launch(Dispatchers.IO) {
             val sortedItems = _items.sortedByDescending {
                 when (typeAnalysis) {
                     TypeAnalysis.Memory -> it.size
                     TypeAnalysis.Security -> it.percentageRisk
                     TypeAnalysis.Usage -> it.percentageUsage
-                    else -> it.size
                 }
             }
             withContext(Dispatchers.Main) {
@@ -105,4 +107,26 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateShowDialog() {
+        _showDialog.value = !_showDialog.value
+    }
+
+    fun analysisDescription() {
+        if (!hasUsageStatsPermission()) {
+            application.requestUsageStatsPermission()
+            return
+        }
+        analysisJob?.cancel()
+        analysisJob = viewModelScope.launch(Dispatchers.IO) {
+            _description.value = analysisUseCase(filteredItems.value)
+            updateShowDialog()
+        }
+    }
+
+    fun hasUsageStatsPermission(): Boolean {
+        return application.hasUsageStatsPermission()
+    }
+
+
 }
