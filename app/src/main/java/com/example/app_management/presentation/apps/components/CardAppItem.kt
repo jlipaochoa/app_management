@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,10 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
+import com.example.app_management.R
 import com.example.app_management.domain.models.AppInfoAnalysis
 import com.example.app_management.domain.models.colorUsage
 import com.example.app_management.domain.models.getColorRisk
@@ -36,11 +39,13 @@ fun CardAppItem(
     appInfo: AppInfoAnalysis,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp),
-        colors = CardColors(Color.Transparent, Color.Black, Color.Transparent, Color.Black),
+        colors = CardDefaults.cardColors(Color.Transparent),
         onClick = onClick
     ) {
         Column(
@@ -52,7 +57,7 @@ fun CardAppItem(
                 painter = rememberImagePainter(
                     data = appInfo.image
                 ),
-                contentDescription = "App Icon",
+                contentDescription = context.getString(R.string.app_icon),
                 modifier = Modifier
                     .size(60.dp)
                     .background(DarkGrey40, shape = RoundedCornerShape(25))
@@ -71,7 +76,7 @@ fun CardAppItem(
                 color = Color.White
             )
             Text(
-                text = "Tamano: ${appInfo.size} MB",
+                text = context.getString(R.string.app_size, appInfo.size.toString()),
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -80,7 +85,7 @@ fun CardAppItem(
                 color = Color.White
             )
             Text(
-                text = "Riesgo: ${appInfo.percentageRisk} %",
+                text = context.getString(R.string.app_risk, appInfo.percentageRisk.toString()),
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -89,7 +94,7 @@ fun CardAppItem(
                 color = appInfo.getColorRisk()
             )
             Text(
-                text = "Uso: ${appInfo.labelUsage()}",
+                text = context.getString(R.string.app_usage, appInfo.labelUsage()),
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,

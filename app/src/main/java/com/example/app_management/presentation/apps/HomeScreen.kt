@@ -31,19 +31,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.example.app_management.R
 import com.example.app_management.presentation.apps.components.AnalysisSection
 import com.example.app_management.presentation.apps.components.AppBar
 import com.example.app_management.presentation.apps.components.CardAppItem
 import com.example.app_management.presentation.apps.components.DialogAnalysis
 import com.example.app_management.presentation.ui.theme.Green40
 import com.example.app_management.util.Screen
-
 @Composable
 fun HomeScreen(
     navController: NavController,
@@ -63,6 +64,8 @@ fun HomeScreen(
 
     val showDialog by viewModel.showDialog.collectAsState()
 
+    val ctx = LocalContext.current
+    
     DialogAnalysis(
         filteredItems = filteredItems,
         showDialog = showDialog,
@@ -85,7 +88,7 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             AppBar(
-                title = "Gestor de Aplicacione Alwa",
+                title = ctx.getString(R.string.app_title),
                 appBarState = appBarState,
                 query = query,
                 onSearch = { viewModel.onSearchQueryChanged(it) },
@@ -96,7 +99,7 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = { viewModel.analysisDescription() },
             ) {
-                Icon(Icons.Filled.Settings, "Analisa.")
+                Icon(Icons.Filled.Settings, ctx.getString(R.string.analysis_button_description))
             }
         }
     ) { innerPadding ->
@@ -111,7 +114,10 @@ fun HomeScreen(
                 typeAnalysisSelected = typeAnalysis
             )
             if (!hasPermissions) {
-                Text("No tienes permisos de Usage Stats.", Modifier.padding(horizontal = 20.dp).align(Alignment.CenterHorizontally))
+                Text(
+                    ctx.getString(R.string.do_not_have_usage_stats),
+                    Modifier.padding(horizontal = 20.dp).align(Alignment.CenterHorizontally)
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
@@ -121,7 +127,7 @@ fun HomeScreen(
                     },
                     modifier = Modifier.padding(horizontal = 20.dp).align(Alignment.CenterHorizontally)
                 ) {
-                    Text("Habilitar permisos")
+                    Text(ctx.getString(R.string.enable_permissions))
                 }
             } else {
                 LazyVerticalGrid(
