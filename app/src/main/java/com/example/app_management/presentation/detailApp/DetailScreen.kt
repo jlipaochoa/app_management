@@ -33,10 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.example.app_management.R
 import com.example.app_management.presentation.detailApp.components.PermissionCheck
 import com.example.app_management.presentation.detailApp.components.SectionDetail
 import com.example.app_management.presentation.ui.theme.Green40
@@ -46,6 +48,8 @@ fun DetailAppScreen(
     navController: NavController,
     detailViewModel: DetailViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val appDetail by detailViewModel.appDetail.collectAsState()
 
     val analysisUsage by detailViewModel.analysisUsage.collectAsState()
@@ -81,7 +85,7 @@ fun DetailAppScreen(
                         painter = rememberImagePainter(
                             data = appDetail?.image,
                         ),
-                        contentDescription = "App Icon",
+                        contentDescription = context.getString(R.string.app_icon),
                         modifier = Modifier
                             .width(60.dp)
                             .height(60.dp)
@@ -100,13 +104,13 @@ fun DetailAppScreen(
                         ) {
                             Text(
                                 style = MaterialTheme.typography.titleLarge,
-                                text = appDetail?.name ?: "Cargando ...",
+                                text = appDetail?.name ?: context.getString(R.string.app_loading),
                                 color = Color.White
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
                                 style = MaterialTheme.typography.titleSmall,
-                                text = appDetail?.category ?: "Cargando ...",
+                                text = appDetail?.category ?: context.getString(R.string.app_loading),
                                 modifier = Modifier
                                     .background(color = Green40, shape = RoundedCornerShape(10.dp))
                                     .padding(5.dp),
@@ -131,18 +135,19 @@ fun DetailAppScreen(
                         .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
                     Text(
-                        "Descripcion",
+                        context.getString(R.string.description_label),
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
-                        appDetail?.description ?: "Aun no cuenta con una descripcion",
+                        appDetail?.description ?: context.getString(R.string.no_description),
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
+
             item {
                 Row(
                     modifier = Modifier
@@ -151,8 +156,8 @@ fun DetailAppScreen(
                         .padding(vertical = 10.dp, horizontal = 20.dp)
                 ) {
                     SectionDetail(
-                        title = "Version App",
-                        data = appDetail?.version ?: "Cargando ...",
+                        title = context.getString(R.string.version_label),
+                        data = appDetail?.version ?: context.getString(R.string.app_loading),
                         modifier = Modifier
                             .weight(0.3f)
                             .align(Alignment.CenterVertically)
@@ -166,8 +171,8 @@ fun DetailAppScreen(
                     )
                     Spacer(modifier = Modifier.weight(0.1f))
                     SectionDetail(
-                        title = "Nº de app",
-                        data = appDetail?.versionCode?.toString() ?: "Cargando ...",
+                        title = context.getString(R.string.app_number_label),
+                        data = appDetail?.versionCode?.toString() ?: context.getString(R.string.app_loading),
                         modifier = Modifier
                             .weight(0.3f)
                             .align(Alignment.CenterVertically)
@@ -181,44 +186,10 @@ fun DetailAppScreen(
                     )
                     Spacer(modifier = Modifier.weight(0.1f))
                     SectionDetail(
-                        title = "Del Sistema",
-                        data = appDetail?.isSystemApp?.toString() ?: "Cargando ...",
+                        title = context.getString(R.string.system_app_label),
+                        data = appDetail?.isSystemApp?.toString() ?: context.getString(R.string.app_loading),
                         modifier = Modifier
                             .weight(0.3f)
-                            .align(Alignment.CenterVertically)
-                    )
-                }
-                HorizontalDivider(
-                    color = Color.Gray,
-                    thickness = 1.dp,
-                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)
-                )
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(IntrinsicSize.Max)
-                        .padding(vertical = 10.dp, horizontal = 20.dp)
-                ) {
-                    SectionDetail(
-                        title = "Fecha de Instalacion",
-                        data = appDetail?.firstInstallTime ?: "Cargando ...",
-                        modifier = Modifier
-                            .weight(0.5f)
-                            .align(Alignment.CenterVertically)
-                    )
-                    Spacer(modifier = Modifier.weight(0.1f))
-                    VerticalDivider(
-                        color = Color.Gray,
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(1.dp)
-                    )
-                    Spacer(modifier = Modifier.weight(0.1f))
-                    SectionDetail(
-                        title = "Fecha de Actualizacion",
-                        data = appDetail?.lastUpdateTime ?: "Cargando ...",
-                        modifier = Modifier
-                            .weight(0.5f)
                             .align(Alignment.CenterVertically)
                     )
                 }
@@ -227,12 +198,12 @@ fun DetailAppScreen(
             item {
                 Column(modifier = Modifier.padding(horizontal = 20.dp)) {
                     Text(
-                        "Esta aplicacion pesa: ${appDetail?.sizeApp} MB",
+                         String.format(context.getString(R.string.app_weight_label), appDetail?.sizeApp?:0),
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
-                        "Porcentaje de uso en los ultimos 7 dias: ${appDetail?.percentageUsage} %",
+                        String.format(context.getString(R.string.usage_percentage_label), appDetail?.percentageUsage?:0),
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Spacer(modifier = Modifier.height(5.dp))
@@ -243,7 +214,7 @@ fun DetailAppScreen(
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Text(
-                        "Permisos de la App",
+                        context.getString(R.string.app_permissions_label),
                         color = Color.White,
                         style = MaterialTheme.typography.titleMedium,
                     )
@@ -255,6 +226,7 @@ fun DetailAppScreen(
                     )
                 }
             }
+
             items(appDetail?.permissions ?: listOf()) {
                 PermissionCheck(
                     it.first,
@@ -267,4 +239,3 @@ fun DetailAppScreen(
         }
     }
 }
-

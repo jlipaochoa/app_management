@@ -68,26 +68,6 @@ fun Context.hasUsageStatsPermission(): Boolean {
     return mode == AppOpsManager.MODE_ALLOWED
 }
 
-fun Context.requestUsageStatsPermission() {
-    try {
-        val intent = Intent(ACTION_USAGE_ACCESS_SETTINGS)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        this.startActivity(intent)
-        Toast.makeText(
-            this,
-            "Por favor habilitar permisos para esta aplicacion",
-            Toast.LENGTH_LONG
-        ).show()
-    } catch (e: Exception) {
-        e.printStackTrace()
-        Toast.makeText(
-            this,
-            "Error al momento de abrir configuraciones",
-            Toast.LENGTH_SHORT
-        ).show()
-    }
-}
-
 fun Context.timesUsageStats(): Pair<Long, List<UsageStats>> {
     val usageStatsManager =
         this.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager

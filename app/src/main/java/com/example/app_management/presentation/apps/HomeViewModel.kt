@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.app_management.domain.models.AppInfoAnalysis
-import com.example.app_management.domain.useCases.AnalysisUseCase
 import com.example.app_management.domain.useCases.GetAppsUseCase
 import com.example.app_management.presentation.apps.components.StateWidgetAppBar
 import com.example.app_management.presentation.apps.components.TypeAnalysis

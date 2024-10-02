@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">alwa</string>
+    <string name="app_title">Gestor de Aplicacione Alwa</string>
+    <string name="analysis_button_description">Analiza.</string>
+    <string name="do_not_have_usage_stats">No tienes permisos de estadísticas de uso</string>
+    <string name="enable_permissions">Habilitar permisos</string>
+    <string name="app_icon">App Icon</string>
+    <string name="app_loading">Cargando ...</string>
+    <string name="description_label">Descripcion</string>
+    <string name="no_description">Aun no cuenta con una descripcion</string>
+    <string name="version_label">Version App</string>
+    <string name="app_number_label">Nº de app</string>
+    <string name="system_app_label">Del Sistema</string>
+    <string name="install_date_label">Fecha de Instalacion</string>
+    <string name="update_date_label">Fecha de Actualizacion</string>
+    <string name="app_weight_label">Esta aplicacion pesa: %s MB</string>
+    <string name="usage_percentage_label">Porcentaje de uso en los ultimos 7 dias: %s%%</string>
+    <string name="app_permissions_label">Permisos de la App</string>
+    <string name="app_size">Tamaño: %s MB</string>
+    <string name="app_risk">Riesgo: %s %%</string>
+    <string name="app_usage">Uso: %s</string>
 </resources>
