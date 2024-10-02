@@ -57,8 +57,6 @@ fun HomeScreen(
 
     val loadingEvent by viewModel.loadingEvent.collectAsState()
 
-    val description by viewModel.description.collectAsState()
-
     val typeAnalysis by viewModel.typeAnalysis.collectAsState()
 
     var hasPermissions by remember { mutableStateOf(viewModel.hasUsageStatsPermission()) }
@@ -66,7 +64,7 @@ fun HomeScreen(
     val showDialog by viewModel.showDialog.collectAsState()
 
     DialogAnalysis(
-        description = description,
+        filteredItems = filteredItems,
         showDialog = showDialog,
         dismissDialog = { viewModel.updateShowDialog() }
     )
@@ -134,7 +132,7 @@ fun HomeScreen(
                             navController.navigate(route = Screen.DetailAppScreen.route + "?packageName=${it.packageName}")
                         }
                     }
-                    item { Spacer(modifier = Modifier.height(300.dp)) }
+                    item { Spacer(modifier = Modifier.height(200.dp)) }
                 }
                 if (loadingEvent) {
                     CircularProgressIndicator(

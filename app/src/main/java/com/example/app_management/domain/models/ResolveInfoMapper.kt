@@ -44,7 +44,8 @@ fun ApplicationInfo.toAppInfoModel(
         context.getAppSize(this.packageName),
         context.getSecurityPercentages(this.packageName),
         times.second.getAppUsagePercentages(this.packageName, times.first, context),
-        this.packageName
+        this.packageName,
+        (this.flags and ApplicationInfo.FLAG_SYSTEM) != 0
     )
 }
 

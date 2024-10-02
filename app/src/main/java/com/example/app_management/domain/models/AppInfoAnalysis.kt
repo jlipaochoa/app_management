@@ -10,7 +10,8 @@ class AppInfoAnalysis(
     val size: Double = 0.0,
     val percentageRisk: Double = 0.0,
     var percentageUsage: Double = 0.0,
-    val packageName: String = ""
+    val packageName: String = "",
+    val systemApp: Boolean = false
 )
 
 fun AppInfoAnalysis.getColorRisk(): Color {

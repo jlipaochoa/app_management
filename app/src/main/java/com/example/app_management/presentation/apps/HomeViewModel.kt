@@ -22,7 +22,6 @@ import kotlin.coroutines.CoroutineContext
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val getAppsUseCase: GetAppsUseCase,
-    val analysisUseCase: AnalysisUseCase,
     private val application: Application,
     private val permissionChecker: PermissionChecker,
     private val coroutineContextProvider: CoroutineContextProvider
@@ -47,9 +46,6 @@ class HomeViewModel @Inject constructor(
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
-
-    private val _description = MutableStateFlow("")
-    val description: StateFlow<String> = _description.asStateFlow()
 
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> = _showDialog.asStateFlow()
@@ -118,7 +114,6 @@ class HomeViewModel @Inject constructor(
                 permissionChecker.requestUsageStatsPermission(application)
                 return@launch
             }
-            _description.value = analysisUseCase(filteredItems.value)
             updateShowDialog()
         }
     }

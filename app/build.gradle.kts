@@ -57,9 +57,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation("io.coil-kt:coil-compose:2.0.0") // cargar imagenes
-    implementation(libs.accompanist.systemuicontroller) //status
-    implementation("androidx.navigation:navigation-compose:2.8.1") //navegacion
+    implementation("io.coil-kt:coil-compose:2.0.0")
+    implementation(libs.accompanist.systemuicontroller)
+    implementation("androidx.navigation:navigation-compose:2.8.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
     implementation("androidx.room:room-runtime:2.6.1")

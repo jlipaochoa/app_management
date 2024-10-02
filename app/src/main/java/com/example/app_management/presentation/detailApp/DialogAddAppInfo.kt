@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,6 +33,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.example.app_management.domain.models.AppInfo
 import com.example.app_management.presentation.ui.theme.DarkGrey40
 import com.example.app_management.presentation.ui.theme.Green40
+import javax.inject.Inject
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -154,8 +156,7 @@ fun CustomDialog(
                 contentAlignment = Alignment.Center
             ) {
                 Box(
-                    Modifier
-                        .width(300.dp),
+                    Modifier.padding(30.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     content()
@@ -165,3 +166,27 @@ fun CustomDialog(
         }
     }
 }
+
+@Composable
+fun FullScreenCustomDialog(
+    showDialog: Boolean,
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    if (showDialog) {
+        Dialog(
+            onDismissRequest = onDismissRequest,
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                dismissOnClickOutside = true
+            )
+        ) {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                content()
+            }
+        }
+    }
+}
+
