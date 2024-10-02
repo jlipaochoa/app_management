@@ -21,7 +21,7 @@ class GetAppByPackageNameUseCase @Inject constructor(
             .firstOrNull { packageName == it.packageName } ?: return null
         val appInfoAnalysis =
             appFromPackageManager.toAppInfoDetail(application.packageManager, application, times)
-        appInfoAnalysis.description = appInfoFromDb?.description ?: "No hay Descripcion"
+        appInfoAnalysis.description = appInfoFromDb?.description ?: ""
         appInfoAnalysis.category = appInfoFromDb?.category ?: "Ninguno"
         return appInfoAnalysis
     }

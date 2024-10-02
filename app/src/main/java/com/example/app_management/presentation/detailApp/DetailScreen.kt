@@ -141,7 +141,7 @@ fun DetailAppScreen(
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
-                        appDetail?.description ?: context.getString(R.string.no_description),
+                        appDetail?.description?.ifEmpty { context.getString(R.string.no_description) }?:context.getString(R.string.no_description),
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
                     )
