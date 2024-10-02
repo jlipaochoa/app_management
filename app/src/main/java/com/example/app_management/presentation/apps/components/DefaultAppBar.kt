@@ -1,5 +1,6 @@
 package com.example.app_management.presentation.apps.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -43,7 +44,9 @@ fun DefaultAppBar(
                 )
             }
         },
-        modifier = Modifier.padding(10.dp).height(65.dp).clip(RoundedCornerShape(100.dp)),
+        modifier = Modifier.padding(10.dp).height(65.dp).clip(RoundedCornerShape(100.dp)).clickable {
+            changeState()
+        },
         colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = DarkGrey40),
         actions = {
             IconButton(onClick = { changeState() }, modifier = Modifier.fillMaxHeight()) {
