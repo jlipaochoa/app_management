@@ -8,6 +8,7 @@ import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
 import com.example.app_management.domain.useCases.InsertAppInfoUseCase
 import com.example.app_management.presentation.apps.CoroutineContextProvider
 import com.example.app_management.presentation.detailApp.DetailViewModel
+import com.example.app_management.presentation.ui.theme.Red80
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.*
@@ -71,13 +72,13 @@ class DetailViewModelTest {
 
         val expectedPermissionsAnalysis = Pair(
             "Te sugerimos que verifiques los permisos que le has otorgado a la app, ya que contiene permisos sensibles.",
-            Color.Red
+            Red80
         )
         assertEquals(expectedPermissionsAnalysis, viewModel.analysisPermissions.first())
 
         val expectedUsageAnalysis = Pair(
             "Te sugerimos que lo borres, no lo usas.",
-            Color.Red
+            Red80
         )
         assertEquals(expectedUsageAnalysis, viewModel.analysisUsage.first())
     }

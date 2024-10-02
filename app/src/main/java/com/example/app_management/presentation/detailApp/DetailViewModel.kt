@@ -12,6 +12,7 @@ import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
 import com.example.app_management.domain.useCases.InsertAppInfoUseCase
 import com.example.app_management.presentation.apps.CoroutineContextProvider
 import com.example.app_management.presentation.ui.theme.Green40
+import com.example.app_management.presentation.ui.theme.Red80
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -68,14 +69,14 @@ class DetailViewModel @Inject constructor(
                 ?: 0.0) == 0.0 ->
                 Pair(
                     "Te sugerimos que lo borres, no lo usas.",
-                    Color.Red
+                    Red80
                 )
 
             _appDetail.value?.isSystemApp == false && (_appDetail.value?.percentageUsage
                 ?: 0.0) < 11 ->
                 Pair(
                     "Te sugerimos que lo borres, ya que su porcentaje de uso es bajo.",
-                    Color.Red
+                    Red80
                 )
 
             else -> Pair("", Green40)
@@ -87,7 +88,7 @@ class DetailViewModel @Inject constructor(
             _appDetail.value?.isSystemApp == false && (_appDetail.value?.securityPercentages
                 ?: 0.0) > 50 -> Pair(
                 "Te sugerimos que verifiques los permisos que le has otorgado a la app, ya que contiene permisos sensibles.",
-                Color.Red
+                Red80
             )
 
             _appDetail.value?.isSystemApp == false && (_appDetail.value?.securityPercentages

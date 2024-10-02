@@ -15,11 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.app_management.presentation.ui.theme.Red80
 
 @Composable
 fun PermissionCheck(label: String, isChecked: Boolean, modifier: Modifier) {
     val icon = if (isChecked) Icons.Filled.Lock else Icons.Filled.ArrowForward
-    val color = if (isChecked) Color.Red else Color.White
+    val color = if (isChecked) Red80 else Color.White
     Row(modifier) {
         Icon(
             imageVector = icon,
