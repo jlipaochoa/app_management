@@ -27,7 +27,8 @@ class HomeViewModelTest {
     private lateinit var getAppsUseCase: GetAppsUseCase
     private lateinit var permissionChecker: PermissionChecker
 
-    private val coroutine = CoroutineContextProvider(TestCoroutineDispatcher(),TestCoroutineDispatcher())
+    private val coroutine =
+        CoroutineContextProvider(StandardTestDispatcher(), UnconfinedTestDispatcher())
 
     @Before
     fun setup() {
@@ -42,9 +43,8 @@ class HomeViewModelTest {
         )
     }
 
-    @ExperimentalCoroutinesApi
     @Test
-    fun `getLaunchApps loads apps and updates state correctly`() = runBlockingTest {
+    fun `getLaunchApps loads apps and updates state correctly`() = runTest {
         val apps = listOf(
             AppInfoAnalysis("App 1", mock(), 500.0, 10.0, 20.0, "com.example.app1"),
             AppInfoAnalysis("App 2", mock(), 1000.0, 20.0, 30.0, "com.example.app2")
@@ -59,7 +59,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `orderByTypeAnalysis sorts apps correctly when permission granted`() = runBlockingTest {
+    fun `orderByTypeAnalysis sorts apps correctly when permission granted`() = runTest {
         `when`(permissionChecker.hasUsageStatsPermission(anyOrNull())).thenReturn(true)
 
         val apps = listOf(
@@ -69,16 +69,16 @@ class HomeViewModelTest {
         `when`(getAppsUseCase(TypeAnalysis.Memory)).thenReturn(apps)
 
         viewModel.getLaunchApps()
-
+        advanceUntilIdle()
         viewModel.orderByTypeAnalysis(TypeAnalysis.Memory)
-
+        advanceUntilIdle()
         val filteredApps = viewModel.filteredItems.first()
         assertEquals(apps.sortedByDescending { it.size }, filteredApps)
     }
 
 
     @Test
-    fun `orderByTypeAnalysis requests permission if not granted`() = runBlockingTest {
+    fun `orderByTypeAnalysis requests permission if not granted`() = runTest {
         `when`(permissionChecker.hasUsageStatsPermission(anyOrNull())).thenReturn(false)
 
         viewModel.orderByTypeAnalysis(TypeAnalysis.Memory)
@@ -87,7 +87,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `setAppBarState updates the appBarState`() = runBlockingTest {
+    fun `setAppBarState updates the appBarState`() = runTest {
         assertEquals(StateWidgetAppBar.DEFAULT, viewModel.appBarState.first())
 
         viewModel.setAppBarState(StateWidgetAppBar.SEARCH)
@@ -96,7 +96,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun `updateShowDialog toggles showDialog state`() = runBlockingTest {
+    fun `updateShowDialog toggles showDialog state`() = runTest {
         assertEquals(false, viewModel.showDialog.first())
 
         viewModel.updateShowDialog()
@@ -120,9 +120,13 @@ class HomeViewModelTest {
 
         viewModel.getLaunchApps()
 
+        advanceUntilIdle()
+
         viewModel.onSearchQueryChanged("App 1")
 
-        assertEquals(viewModel.filteredItems.value.first().name, "App 1")
+        advanceUntilIdle()
+
+        assertEquals(viewModel.filteredItems.value.firstOrNull()?.name, "App 1")
     }
 }
 

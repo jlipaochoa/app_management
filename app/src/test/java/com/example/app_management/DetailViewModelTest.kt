@@ -1,7 +1,6 @@
 package com.example.app_management
 
 import android.graphics.drawable.ColorDrawable
-import androidx.compose.ui.graphics.Color
 import com.example.app_management.domain.models.AppInfo
 import com.example.app_management.domain.models.AppInfoDetail
 import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
@@ -29,7 +28,7 @@ class DetailViewModelTest {
     private lateinit var getAppByPackageNameUseCase: GetAppByPackageNameUseCase
     private lateinit var insertAppInfoUseCase: InsertAppInfoUseCase
 
-    private val coroutine = CoroutineContextProvider(TestCoroutineDispatcher(),TestCoroutineDispatcher())
+    private val coroutine = CoroutineContextProvider(StandardTestDispatcher(),UnconfinedTestDispatcher())
 
     @Before
     fun setup() {
@@ -45,7 +44,7 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun `getAppByPackageName loads app detail and analyses usage and permissions`() = runBlockingTest {
+    fun `getAppByPackageName loads app detail and analyses usage and permissions`() = runTest {
         val appDetail = AppInfoDetail(
             name = "Test App",
             packageName = "com.example.test",
@@ -84,7 +83,7 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun `insertAppInfo updates app detail`() = runBlockingTest {
+    fun `insertAppInfo updates app detail`() = runTest {
         val appDetail = AppInfoDetail(
             name = "Test App",
             packageName = "com.example.test",
@@ -122,7 +121,7 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun `updateShowDialog toggles showDialog state`() = runBlockingTest {
+    fun `updateShowDialog toggles showDialog state`() = runTest {
         assertEquals(false, viewModel.showDialog.first())
 
         viewModel.updateShowDialog()
@@ -134,7 +133,7 @@ class DetailViewModelTest {
     }
 
     @Test
-    fun `updateDescription updates app info`() = runBlockingTest {
+    fun `updateDescription updates app info`() = runTest {
         val appInfo = AppInfo(
             packageName = "Test App Updated",
             description = "Updated Description",
