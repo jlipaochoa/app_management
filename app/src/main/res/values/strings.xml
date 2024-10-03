@@ -19,4 +19,8 @@
     <string name="app_size">Tamaño: %s MB</string>
     <string name="app_risk">Riesgo: %s %%</string>
     <string name="app_usage">Uso: %s</string>
+    <string name="dialog_analysis_title">Resumen de análisis</string>
+    <string name="dialog_analysis_size">Estas apps son las más pesadas, revisa si es necesario tenerlas:</string>
+    <string name="dialog_analysis_usage">Estas apps son las que has usado poco en estos últimos días, considera eliminarlas:</string>
+    <string name="dialog_analysis_risk">Estas apps tienen permisos sensibles, verifica si los otorgaste:</string>
 </resources>

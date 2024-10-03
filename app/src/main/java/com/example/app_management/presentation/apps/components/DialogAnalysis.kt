@@ -10,18 +10,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.app_management.domain.models.AppInfoAnalysis
-import com.example.app_management.domain.models.AnalysisTotalInfo
+import com.example.domain.models.AppInfoAnalysisState
+import com.example.domain.models.AnalysisTotalInfo
 import com.example.app_management.presentation.detailApp.FullScreenCustomDialog
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.example.app_management.R
 
 @Composable
 fun DialogAnalysis(
     showDialog: Boolean,
-    filteredItems: List<AppInfoAnalysis>?,
+    filteredItems: List<AppInfoAnalysisState>?,
     dismissDialog: () -> Unit = {},
     viewModel: DialogAnalysisViewModel = hiltViewModel()
 ) {
@@ -44,14 +46,14 @@ fun DialogAnalysis(
         ) {
 
             item {
-                Text("Resumen de analisis", style = MaterialTheme.typography.titleLarge)
+                Text(stringResource(id = R.string.dialog_analysis_title), style = MaterialTheme.typography.titleLarge)
                 Text(
-                    "Estas apps son las más pesadas, revisa si es necesario tenerlas:\n",
+                    stringResource(id = R.string.dialog_analysis_size),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(analysisTotalInfo.descriptionSize, style = MaterialTheme.typography.titleSmall)
                 Text(
-                    "Estas apps son las has usado poco en estos ultimos dias, considera eliminarlas:\n",
+                    stringResource(id = R.string.dialog_analysis_usage),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
@@ -59,7 +61,7 @@ fun DialogAnalysis(
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(
-                    "Estas apps tienen permisos sensibles, verifica si los otorgaste:\n",
+                    stringResource(id = R.string.dialog_analysis_risk),
                     style = MaterialTheme.typography.titleSmall
                 )
                 Text(analysisTotalInfo.descriptionRisk, style = MaterialTheme.typography.titleSmall)
@@ -68,5 +70,3 @@ fun DialogAnalysis(
         }
     }
 }
-
-

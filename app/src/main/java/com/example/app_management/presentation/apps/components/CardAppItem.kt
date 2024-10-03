@@ -25,17 +25,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.app_management.R
-import com.example.app_management.domain.models.AppInfoAnalysis
-import com.example.app_management.domain.models.colorUsage
-import com.example.app_management.domain.models.getColorRisk
-import com.example.app_management.domain.models.labelUsage
+import com.example.domain.models.AppInfoAnalysisState
 import com.example.app_management.presentation.ui.theme.DarkGrey40
 
 @Composable
 fun CardAppItem(
-    appInfo: AppInfoAnalysis,
+    appInfo: AppInfoAnalysisState,
     onClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -53,8 +50,8 @@ fun CardAppItem(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = rememberImagePainter(
-                    data = appInfo.image
+                painter = rememberAsyncImagePainter(
+                    model = appInfo.image
                 ),
                 contentDescription = context.getString(R.string.app_icon),
                 modifier = Modifier
@@ -90,16 +87,16 @@ fun CardAppItem(
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall,
                 textAlign = TextAlign.Center,
-                color = appInfo.getColorRisk()
+                color = Color(appInfo.colorRisk)
             )
             Text(
-                text = context.getString(R.string.app_usage, appInfo.labelUsage()),
+                text = context.getString(R.string.app_usage, appInfo.descriptionUsage),
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.titleSmall,
                 textAlign = TextAlign.Center,
-                color = appInfo.colorUsage()
+                color = Color(appInfo.colorUsage)
             )
         }
     }

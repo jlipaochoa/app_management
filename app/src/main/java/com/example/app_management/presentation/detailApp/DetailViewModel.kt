@@ -5,10 +5,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app_management.domain.models.AppInfo
-import com.example.app_management.domain.models.AppInfoDetail
-import com.example.app_management.domain.models.toAppInfo
-import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
+import com.example.domain.models.AppInfo
+import com.example.domain.models.AppInfoDetailState
+import com.example.domain.models.toAppInfo
+import com.example.domain.useCases.GetAppByPackageNameUseCase
 import com.example.app_management.domain.useCases.InsertAppInfoUseCase
 import com.example.app_management.presentation.apps.CoroutineContextProvider
 import com.example.app_management.presentation.ui.theme.Green40
@@ -27,8 +27,8 @@ class DetailViewModel @Inject constructor(
     val insertAppInfoUseCase: InsertAppInfoUseCase,
     private val coroutineContextProvider: CoroutineContextProvider
 ) : ViewModel() {
-    private val _appDetail = MutableStateFlow<AppInfoDetail?>(null)
-    val appDetail: StateFlow<AppInfoDetail?> = _appDetail.asStateFlow()
+    private val _appDetail = MutableStateFlow<AppInfoDetailState?>(null)
+    val appDetail: StateFlow<AppInfoDetailState?> = _appDetail.asStateFlow()
 
     private val _analysisPermissions = MutableStateFlow(Pair("", Green40))
     val analysisPermissions: StateFlow<Pair<String, Color>> = _analysisPermissions.asStateFlow()

@@ -1,12 +1,12 @@
 import android.app.Application
 import com.example.app_management.MainCoroutineRule
-import com.example.app_management.domain.models.AppInfoAnalysis
-import com.example.app_management.domain.useCases.GetAppsUseCase
+import com.example.domain.models.AppInfoAnalysisState
+import com.example.domain.useCases.GetAppsUseCase
 import com.example.app_management.presentation.apps.CoroutineContextProvider
 import com.example.app_management.presentation.apps.HomeViewModel
 import com.example.app_management.presentation.apps.components.StateWidgetAppBar
-import com.example.app_management.presentation.apps.components.TypeAnalysis
 import com.example.app_management.presentation.ui.PermissionChecker
+import com.example.domain.useCases.TypeAnalysis
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -46,8 +46,8 @@ class HomeViewModelTest {
     @Test
     fun `getLaunchApps loads apps and updates state correctly`() = runTest {
         val apps = listOf(
-            AppInfoAnalysis("App 1", mock(), 500.0, 10.0, 20.0, "com.example.app1"),
-            AppInfoAnalysis("App 2", mock(), 1000.0, 20.0, 30.0, "com.example.app2")
+            AppInfoAnalysisState("App 1", mock(), 500.0, 10.0, 20.0, "com.example.app1"),
+            AppInfoAnalysisState("App 2", mock(), 1000.0, 20.0, 30.0, "com.example.app2")
         )
 
         `when`(getAppsUseCase(TypeAnalysis.Memory)).thenReturn(apps)
@@ -63,8 +63,8 @@ class HomeViewModelTest {
         `when`(permissionChecker.hasUsageStatsPermission(anyOrNull())).thenReturn(true)
 
         val apps = listOf(
-            AppInfoAnalysis("App 1", mock(), 500.0, 10.0, 20.0, "com.example.app1"),
-            AppInfoAnalysis("App 2", mock(), 1000.0, 20.0, 30.0, "com.example.app2")
+            AppInfoAnalysisState("App 1", mock(), 500.0, 10.0, 20.0, "com.example.app1"),
+            AppInfoAnalysisState("App 2", mock(), 1000.0, 20.0, 30.0, "com.example.app2")
         )
         `when`(getAppsUseCase(TypeAnalysis.Memory)).thenReturn(apps)
 
@@ -113,8 +113,8 @@ class HomeViewModelTest {
         `when`(permissionChecker.hasUsageStatsPermission(anyOrNull())).thenReturn(true)
 
         val apps = listOf(
-            AppInfoAnalysis("App 1", mock(), 500.0, 10.0, 20.0, "com.example.app1"),
-            AppInfoAnalysis("App 2", mock(), 1000.0, 20.0, 30.0, "com.example.app2")
+            AppInfoAnalysisState("App 1", mock(), 500.0, 10.0, 20.0, "com.example.app1"),
+            AppInfoAnalysisState("App 2", mock(), 1000.0, 20.0, 30.0, "com.example.app2")
         )
         `when`(getAppsUseCase(TypeAnalysis.Memory)).thenReturn(apps)
 

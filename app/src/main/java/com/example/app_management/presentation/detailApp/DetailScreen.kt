@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,7 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import coil.compose.rememberImagePainter
+import coil.compose.rememberAsyncImagePainter
 import com.example.app_management.R
 import com.example.app_management.presentation.detailApp.components.PermissionCheck
 import com.example.app_management.presentation.detailApp.components.SectionDetail
@@ -82,9 +81,7 @@ fun DetailAppScreen(
                         .padding(start = 20.dp, top = 20.dp)
                 ) {
                     Image(
-                        painter = rememberImagePainter(
-                            data = appDetail?.image,
-                        ),
+                        painter = rememberAsyncImagePainter(model = appDetail?.image),
                         contentDescription = context.getString(R.string.app_icon),
                         modifier = Modifier
                             .width(60.dp)

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,10 +29,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import com.example.app_management.domain.models.AppInfo
+import com.example.domain.models.AppInfo
 import com.example.app_management.presentation.ui.theme.DarkGrey40
 import com.example.app_management.presentation.ui.theme.Green40
-import javax.inject.Inject
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable

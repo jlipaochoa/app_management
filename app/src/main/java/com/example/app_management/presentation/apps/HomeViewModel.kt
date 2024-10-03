@@ -3,11 +3,11 @@ package com.example.app_management.presentation.apps
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.app_management.domain.models.AppInfoAnalysis
-import com.example.app_management.domain.useCases.GetAppsUseCase
+import com.example.domain.models.AppInfoAnalysisState
+import com.example.domain.useCases.GetAppsUseCase
 import com.example.app_management.presentation.apps.components.StateWidgetAppBar
-import com.example.app_management.presentation.apps.components.TypeAnalysis
 import com.example.app_management.presentation.ui.PermissionChecker
+import com.example.domain.useCases.TypeAnalysis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,13 +32,13 @@ class HomeViewModel @Inject constructor(
 
     private var getAppJobs: Job? = null
 
-    private var _items = listOf<AppInfoAnalysis>()
+    private var _items = listOf<AppInfoAnalysisState>()
 
     private val _loadingEvent = MutableStateFlow(false)
     val loadingEvent: StateFlow<Boolean> = _loadingEvent.asStateFlow()
 
     private val _filteredItems = MutableStateFlow(_items)
-    val filteredItems: StateFlow<List<AppInfoAnalysis>> = _filteredItems.asStateFlow()
+    val filteredItems: StateFlow<List<AppInfoAnalysisState>> = _filteredItems.asStateFlow()
 
     private val _appBarState = MutableStateFlow(StateWidgetAppBar.DEFAULT)
     val appBarState: StateFlow<StateWidgetAppBar> = _appBarState
@@ -52,6 +52,8 @@ class HomeViewModel @Inject constructor(
     private val _typeAnalysis = MutableStateFlow(TypeAnalysis.Memory)
     val typeAnalysis: StateFlow<TypeAnalysis> = _typeAnalysis.asStateFlow()
 
+    private var _firstTimeLoading = MutableStateFlow(false)
+
     fun setAppBarState(state: StateWidgetAppBar) {
         _appBarState.value = state
     }
@@ -59,13 +61,16 @@ class HomeViewModel @Inject constructor(
     fun getLaunchApps() {
         getAppJobs?.cancel()
         getAppJobs = viewModelScope.launch {
-            _filteredItems.value = listOf()
-            _loadingEvent.value = true
+            if (!_firstTimeLoading.value){
+                _filteredItems.value = listOf()
+                _loadingEvent.value = true
+            }
             val apps = withContext(coroutineContextProvider.backgroundContext) {
                 getAppsUseCase(typeAnalysis.value)
             }
             _items = apps
             _loadingEvent.value = false
+            _firstTimeLoading.value = true
             onSearchQueryChanged(query.value)
         }
     }

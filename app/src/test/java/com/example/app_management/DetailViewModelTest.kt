@@ -1,9 +1,9 @@
 package com.example.app_management
 
 import android.graphics.drawable.ColorDrawable
-import com.example.app_management.domain.models.AppInfo
-import com.example.app_management.domain.models.AppInfoDetail
-import com.example.app_management.domain.useCases.GetAppByPackageNameUseCase
+import com.example.domain.models.AppInfo
+import com.example.domain.models.AppInfoDetailState
+import com.example.domain.useCases.GetAppByPackageNameUseCase
 import com.example.app_management.domain.useCases.InsertAppInfoUseCase
 import com.example.app_management.presentation.apps.CoroutineContextProvider
 import com.example.app_management.presentation.detailApp.DetailViewModel
@@ -45,7 +45,7 @@ class DetailViewModelTest {
 
     @Test
     fun `getAppByPackageName loads app detail and analyses usage and permissions`() = runTest {
-        val appDetail = AppInfoDetail(
+        val appDetail = AppInfoDetailState(
             name = "Test App",
             packageName = "com.example.test",
             isSystemApp = false,
@@ -84,7 +84,7 @@ class DetailViewModelTest {
 
     @Test
     fun `insertAppInfo updates app detail`() = runTest {
-        val appDetail = AppInfoDetail(
+        val appDetail = AppInfoDetailState(
             name = "Test App",
             packageName = "com.example.test",
             isSystemApp = false,

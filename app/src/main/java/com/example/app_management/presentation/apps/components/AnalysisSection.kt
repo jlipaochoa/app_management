@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.domain.useCases.TypeAnalysis
 import com.example.app_management.presentation.ui.theme.Background
 import com.example.app_management.presentation.ui.theme.DarkGrey40
 
@@ -81,8 +82,4 @@ fun AnalysisSection(
     }
 }
 
-enum class TypeAnalysis {
-    Usage,
-    Memory,
-    Security
-}
+

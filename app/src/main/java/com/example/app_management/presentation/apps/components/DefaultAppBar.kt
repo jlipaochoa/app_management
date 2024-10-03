@@ -16,7 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +47,7 @@ fun DefaultAppBar(
         modifier = Modifier.padding(10.dp).height(65.dp).clip(RoundedCornerShape(100.dp)).clickable {
             changeState()
         },
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = DarkGrey40),
+        colors = topAppBarColors(containerColor = DarkGrey40),
         actions = {
             IconButton(onClick = { changeState() }, modifier = Modifier.fillMaxHeight()) {
                 Icon(
